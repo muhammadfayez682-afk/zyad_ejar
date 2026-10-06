@@ -1,0 +1,427 @@
+<!doctype html>
+<html lang="ar" dir="rtl">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width,initial-scale=1,viewport-fit=cover">
+<style>body{margin:0}img{max-width:100%}[hidden]{display:none!important}</style>
+<title>إيجاراتي</title>
+<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=IBM+Plex+Sans+Arabic:wght@400;500;600&family=Readex+Pro:wght@500;600&display=swap">
+<style>
+/* Layout: one-column phone app, sticky title, fixed bottom tabs, forms open as bottom sheets. */
+:root{
+  --bg:#f1f4f2; --surface:#ffffff; --ink:#14211d; --muted:#5d6b66; --line:#dbe2df;
+  --accent:#0f6b5c; --on-accent:#ffffff; --accent-soft:#dcefe9;
+  --late:#b3261e; --late-soft:#fbe4e1; --warn:#8a5200; --warn-soft:#fbeed3; --ok:#1b7a43; --ok-soft:#dff3e6;
+  --display:"Readex Pro","IBM Plex Sans Arabic",Tahoma,sans-serif;
+  --body:"IBM Plex Sans Arabic",Tahoma,"Segoe UI",sans-serif;
+}
+@media (prefers-color-scheme:dark){:root:not([data-theme="light"]){
+  --bg:#0f1614; --surface:#18221f; --ink:#e6efec; --muted:#93a39d; --line:#2a3733;
+  --accent:#4fc3ad; --on-accent:#06231d; --accent-soft:#17362f;
+  --late:#ff8a80; --late-soft:#3d1c19; --warn:#f0b455; --warn-soft:#3a2c12; --ok:#6fd598; --ok-soft:#153422; color-scheme:dark}}
+:root[data-theme="dark"]{
+  --bg:#0f1614; --surface:#18221f; --ink:#e6efec; --muted:#93a39d; --line:#2a3733;
+  --accent:#4fc3ad; --on-accent:#06231d; --accent-soft:#17362f;
+  --late:#ff8a80; --late-soft:#3d1c19; --warn:#f0b455; --warn-soft:#3a2c12; --ok:#6fd598; --ok-soft:#153422; color-scheme:dark}
+*{box-sizing:border-box}
+body{background:var(--bg);color:var(--ink);font-family:var(--body);font-size:15px;line-height:1.6}
+#app{max-width:640px;margin:0 auto;padding-inline:16px;padding-block:0 96px}
+header.top{position:sticky;top:env(safe-area-inset-top,0px);background:var(--bg);padding-block:14px 10px;z-index:5;display:flex;align-items:center;justify-content:space-between;gap:12px}
+h1{font-family:var(--display);font-size:22px;margin:0;font-weight:600}
+h2{font-family:var(--display);font-size:15px;margin:0;font-weight:600}
+.role{font-size:12px;color:var(--muted);border:1px solid var(--line);border-radius:999px;padding:2px 10px}
+main{display:flex;flex-direction:column;gap:18px}
+section{display:flex;flex-direction:column;gap:8px}
+.muted{color:var(--muted)} .small{font-size:13px}
+.num{font-variant-numeric:tabular-nums;font-family:var(--display);direction:ltr;unicode-bidi:isolate}
+.figures{display:grid;grid-template-columns:1fr 1fr;gap:10px}
+.fig{background:var(--surface);border:1px solid var(--line);border-radius:14px;padding:12px 14px;min-width:0}
+.fig.wide{grid-column:1/-1}
+.fig b{display:block;font-family:var(--display);font-size:22px;font-weight:600;font-variant-numeric:tabular-nums}
+.fig.late b{color:var(--late)}
+.bar{height:6px;background:var(--line);border-radius:3px;overflow:hidden;margin-top:8px}
+.bar i{display:block;height:100%;background:var(--accent)}
+.list{background:var(--surface);border:1px solid var(--line);border-radius:14px;overflow:hidden}
+.row{display:flex;align-items:center;gap:10px;padding:12px 14px;border-top:1px solid var(--line);width:100%;background:none;border-inline:0;border-bottom:0;color:inherit;font:inherit;text-align:start}
+.row:first-child{border-top:0}
+button.row{cursor:pointer}
+.row .grow{flex:1;min-width:0}
+.row .t{font-weight:600;overflow-wrap:anywhere}
+.row .end{text-align:end;white-space:nowrap}
+.pill{display:inline-block;font-size:12px;border-radius:999px;padding:1px 9px;font-weight:500}
+.pill.late{background:var(--late-soft);color:var(--late)} .pill.ok{background:var(--ok-soft);color:var(--ok)}
+.pill.warn{background:var(--warn-soft);color:var(--warn)} .pill.off{background:var(--line);color:var(--muted)}
+.empty{padding:22px 16px;text-align:center;color:var(--muted)}
+.btn{font:inherit;font-weight:600;border-radius:12px;padding:10px 16px;border:1px solid var(--line);background:var(--surface);color:var(--ink);cursor:pointer}
+.btn.main{background:var(--accent);color:var(--on-accent);border-color:var(--accent)}
+.btn.danger{color:var(--late)}
+.btn.sm{padding:6px 12px;font-size:13px}
+.btns{display:flex;gap:8px;flex-wrap:wrap}
+.chips{display:flex;gap:6px;flex-wrap:wrap}
+.chip{font:inherit;font-size:13px;border:1px solid var(--line);background:var(--surface);color:var(--ink);border-radius:999px;padding:5px 13px;cursor:pointer}
+.chip[aria-pressed="true"]{background:var(--accent);color:var(--on-accent);border-color:var(--accent)}
+input,select,textarea{font:inherit;color:var(--ink);background:var(--surface);border:1px solid var(--line);border-radius:10px;padding:10px 12px;width:100%}
+textarea{min-height:90px}
+label{display:flex;flex-direction:column;gap:4px;font-size:13px;color:var(--muted)}
+:focus-visible{outline:2px solid var(--accent);outline-offset:2px}
+nav.tabs{position:fixed;inset-inline:0;bottom:0;background:var(--surface);border-top:1px solid var(--line);display:flex;justify-content:center;padding-bottom:env(safe-area-inset-bottom,0px);z-index:10}
+nav.tabs div{display:flex;width:100%;max-width:640px}
+nav.tabs button{flex:1;font:inherit;font-size:12px;background:none;border:0;color:var(--muted);padding:9px 2px 10px;cursor:pointer;display:flex;flex-direction:column;align-items:center;gap:2px}
+nav.tabs svg{width:22px;height:22px;fill:none;stroke:currentColor;stroke-width:1.7;stroke-linecap:round;stroke-linejoin:round}
+nav.tabs button[aria-current="page"]{color:var(--accent);font-weight:600}
+.sheet-bg{position:fixed;inset:0;background:rgba(0,0,0,.45);z-index:20;display:flex;align-items:flex-end;justify-content:center}
+.sheet{background:var(--bg);width:100%;max-width:640px;max-height:92%;overflow:auto;border-radius:18px 18px 0 0;padding:16px 16px calc(20px + env(safe-area-inset-bottom,0px));display:flex;flex-direction:column;gap:12px}
+.sheet-head{display:flex;justify-content:space-between;align-items:center;gap:10px}
+form{display:flex;flex-direction:column;gap:12px}
+.two{display:grid;grid-template-columns:1fr 1fr;gap:10px}
+.tbl{overflow-x:auto;background:var(--surface);border:1px solid var(--line);border-radius:14px}
+table{border-collapse:collapse;width:100%;font-size:13.5px}
+th,td{padding:9px 12px;text-align:start;border-top:1px solid var(--line);white-space:nowrap}
+tr:first-child th{border-top:0;color:var(--muted);font-weight:500}
+td.n,th.n{text-align:end;font-variant-numeric:tabular-nums}
+tfoot td{font-weight:600}
+.neg{color:var(--late)} .pos{color:var(--ok)}
+#toast{position:fixed;bottom:calc(84px + env(safe-area-inset-bottom,0px));inset-inline:16px;margin:auto;max-width:420px;background:var(--ink);color:var(--bg);padding:10px 14px;border-radius:12px;text-align:center;z-index:30}
+</style>
+
+</head>
+<body>
+<div id="app" dir="rtl" lang="ar">
+  <header class="top"><h1 id="title">إيجاراتي</h1><div class="btns" style="align-items:center"><button class="btn sm" id="usersBtn" data-act="users" hidden>المستخدمون</button><span class="role" id="role"></span></div></header>
+  <main id="view"><div class="empty">جارٍ التحميل…</div></main>
+</div>
+<nav class="tabs" dir="rtl"><div id="tabs"></div></nav>
+<div id="sheet" hidden></div>
+<div id="toast" dir="rtl" hidden></div>
+
+<script>
+/* Standalone mode (GitHub Pages): data is kept in this browser's localStorage. */
+(function(){if(window.claude&&window.claude.use)return;
+const KEY='ejarati-data';let D={};try{D=JSON.parse(localStorage.getItem(KEY)||'{}')}catch(e){}
+const subs={};const persist=()=>{try{localStorage.setItem(KEY,JSON.stringify(D))}catch(e){}};
+if(!D.__seeded){D.__seeded={v:{t:1}};([{"op":"set","collection":"buildings","doc_id":"demo-b1","data":{"name":"عمارة الروضة (تجريبي)","units":["شقة 1","شقة 2","شقة 3","شقة 4","شقة 5","شقة 6"]}},{"op":"set","collection":"buildings","doc_id":"demo-b2","data":{"name":"عمارة الفيصلية (تجريبي)","units":["شقة 1","شقة 2","شقة 3","شقة 4","محل 1"]}},{"op":"set","collection":"contracts","doc_id":"demo-c1","data":{"buildingId":"demo-b1","unit":"شقة 1","tenant":"مستأجر أول (تجريبي)","phone":"0500000001","amount":2500,"cycle":1,"start":"2026-06-01","end":"","closed":false}},{"op":"set","collection":"contracts","doc_id":"demo-c2","data":{"buildingId":"demo-b1","unit":"شقة 2","tenant":"مستأجر ثانٍ (تجريبي)","phone":"0500000002","amount":2300,"cycle":1,"start":"2026-05-10","end":"","closed":false}},{"op":"set","collection":"contracts","doc_id":"demo-c3","data":{"buildingId":"demo-b1","unit":"شقة 3","tenant":"مستأجر ثالث (تجريبي)","phone":"0500000003","amount":30000,"cycle":12,"start":"2026-03-01","end":"2027-03-01","closed":false}},{"op":"set","collection":"contracts","doc_id":"demo-c4","data":{"buildingId":"demo-b1","unit":"شقة 4","tenant":"مستأجر رابع (تجريبي)","phone":"0500000004","amount":14000,"cycle":6,"start":"2026-02-15","end":"","closed":false}},{"op":"set","collection":"contracts","doc_id":"demo-c5","data":{"buildingId":"demo-b2","unit":"شقة 1","tenant":"مستأجر خامس (تجريبي)","phone":"0500000005","amount":8000,"cycle":3,"start":"2026-01-20","end":"","closed":false}},{"op":"set","collection":"contracts","doc_id":"demo-c6","data":{"buildingId":"demo-b2","unit":"محل 1","tenant":"مستأجر سادس (تجريبي)","phone":"0500000006","amount":4000,"cycle":1,"start":"2026-07-10","end":"","closed":false}},{"op":"set","collection":"contracts","doc_id":"demo-c7","data":{"buildingId":"demo-b2","unit":"شقة 2","tenant":"مستأجر سابع (تجريبي)","phone":"0500000007","amount":2200,"cycle":1,"start":"2025-10-01","end":"2026-07-01","closed":true}},{"op":"set","collection":"payments","doc_id":"demo-p1","data":{"contractId":"demo-c1","buildingId":"demo-b1","amount":2500,"date":"2026-06-01","method":"تحويل بنكي","note":"","by":null}},{"op":"set","collection":"payments","doc_id":"demo-p2","data":{"contractId":"demo-c1","buildingId":"demo-b1","amount":2500,"date":"2026-07-02","method":"تحويل بنكي","note":"","by":null}},{"op":"set","collection":"payments","doc_id":"demo-p3","data":{"contractId":"demo-c1","buildingId":"demo-b1","amount":2500,"date":"2026-08-01","method":"تحويل بنكي","note":"","by":null}},{"op":"set","collection":"payments","doc_id":"demo-p4","data":{"contractId":"demo-c1","buildingId":"demo-b1","amount":2500,"date":"2026-09-03","method":"تحويل بنكي","note":"","by":null}},{"op":"set","collection":"payments","doc_id":"demo-p5","data":{"contractId":"demo-c1","buildingId":"demo-b1","amount":2500,"date":"2026-10-01","method":"تحويل بنكي","note":"","by":null}},{"op":"set","collection":"payments","doc_id":"demo-p6","data":{"contractId":"demo-c2","buildingId":"demo-b1","amount":2300,"date":"2026-05-12","method":"نقدي","note":"","by":null}},{"op":"set","collection":"payments","doc_id":"demo-p7","data":{"contractId":"demo-c2","buildingId":"demo-b1","amount":2300,"date":"2026-06-15","method":"نقدي","note":"","by":null}},{"op":"set","collection":"payments","doc_id":"demo-p8","data":{"contractId":"demo-c2","buildingId":"demo-b1","amount":2300,"date":"2026-07-20","method":"نقدي","note":"","by":null}},{"op":"set","collection":"payments","doc_id":"demo-p9","data":{"contractId":"demo-c3","buildingId":"demo-b1","amount":30000,"date":"2026-03-01","method":"شيك","note":"","by":null}},{"op":"set","collection":"payments","doc_id":"demo-p10","data":{"contractId":"demo-c4","buildingId":"demo-b1","amount":14000,"date":"2026-02-16","method":"تحويل بنكي","note":"","by":null}},{"op":"set","collection":"payments","doc_id":"demo-p11","data":{"contractId":"demo-c4","buildingId":"demo-b1","amount":7000,"date":"2026-08-20","method":"تحويل بنكي","note":"","by":null}},{"op":"set","collection":"payments","doc_id":"demo-p12","data":{"contractId":"demo-c5","buildingId":"demo-b2","amount":8000,"date":"2026-01-20","method":"تحويل بنكي","note":"","by":null}},{"op":"set","collection":"payments","doc_id":"demo-p13","data":{"contractId":"demo-c5","buildingId":"demo-b2","amount":8000,"date":"2026-04-22","method":"تحويل بنكي","note":"","by":null}},{"op":"set","collection":"payments","doc_id":"demo-p14","data":{"contractId":"demo-c5","buildingId":"demo-b2","amount":8000,"date":"2026-07-21","method":"تحويل بنكي","note":"","by":null}},{"op":"set","collection":"payments","doc_id":"demo-p15","data":{"contractId":"demo-c6","buildingId":"demo-b2","amount":4000,"date":"2026-07-10","method":"شبكة","note":"","by":null}},{"op":"set","collection":"payments","doc_id":"demo-p16","data":{"contractId":"demo-c6","buildingId":"demo-b2","amount":4000,"date":"2026-08-11","method":"شبكة","note":"","by":null}},{"op":"set","collection":"payments","doc_id":"demo-p17","data":{"contractId":"demo-c6","buildingId":"demo-b2","amount":4000,"date":"2026-09-10","method":"شبكة","note":"","by":null}},{"op":"set","collection":"payments","doc_id":"demo-p18","data":{"contractId":"demo-c7","buildingId":"demo-b2","amount":19800,"date":"2026-06-28","method":"تحويل بنكي","note":"","by":null}},{"op":"set","collection":"expenses","doc_id":"demo-e1","data":{"buildingId":"demo-b1","category":"إيجار المالك","amount":9000,"date":"2026-09-01","note":""}},{"op":"set","collection":"expenses","doc_id":"demo-e2","data":{"buildingId":"demo-b1","category":"إيجار المالك","amount":9000,"date":"2026-10-01","note":""}},{"op":"set","collection":"expenses","doc_id":"demo-e3","data":{"buildingId":"demo-b2","category":"إيجار المالك","amount":6000,"date":"2026-09-01","note":""}},{"op":"set","collection":"expenses","doc_id":"demo-e4","data":{"buildingId":"demo-b2","category":"إيجار المالك","amount":6000,"date":"2026-10-01","note":""}},{"op":"set","collection":"expenses","doc_id":"demo-e5","data":{"buildingId":"demo-b1","category":"كهرباء وماء","amount":850,"date":"2026-09-25","note":"الخدمات المشتركة"}},{"op":"set","collection":"maintenance","doc_id":"demo-m1","data":{"buildingId":"demo-b1","unit":"شقة 2","title":"تسريب في سخان الماء","date":"2026-09-28","status":"مفتوح","amount":0,"note":"بانتظار السباك","by":null}},{"op":"set","collection":"maintenance","doc_id":"demo-m2","data":{"buildingId":"demo-b1","unit":"شقة 5","title":"دهان وتجهيز قبل التأجير","date":"2026-09-15","status":"منجز","amount":1800,"note":"","by":null}},{"op":"set","collection":"maintenance","doc_id":"demo-m3","data":{"buildingId":"demo-b2","unit":"محل 1","title":"إصلاح مكيف","date":"2026-10-02","status":"مفتوح","amount":450,"note":"","by":null}}]).forEach(w=>{(D[w.collection]=D[w.collection]||{})[w.doc_id]=w.data;});persist();}
+const snap=c=>({docs:Object.keys(D[c]||{}).sort().map(id=>({id,exists:true,data:()=>D[c][id]}))});
+const fire=c=>(subs[c]||[]).forEach(f=>f(snap(c)));
+const docRef=(c,id)=>({id,path:c+'/'+id,get:async()=>({id,exists:!!(D[c]&&D[c][id]),data:()=>D[c]&&D[c][id]}),
+  set:async d=>{(D[c]=D[c]||{})[id]=JSON.parse(JSON.stringify(d));persist();fire(c);},delete:async()=>{if(D[c])delete D[c][id];persist();fire(c);}});
+const db={doc:p=>{const k=p.lastIndexOf('/');return docRef(p.slice(0,k),p.slice(k+1));},
+  collection:c=>({doc:id=>docRef(c,id||('d'+Date.now().toString(36)+Math.random().toString(36).slice(2,7))),onSnapshot:f=>{(subs[c]=subs[c]||[]).push(f);setTimeout(()=>f(snap(c)),0);return()=>{};}})};
+const user={canEdit:async()=>true,isOwner:async()=>true,can:async()=>true,id:async()=>'local',profiles:async ids=>Object.fromEntries(ids.map(x=>[x,{id:x,name:'أنا'}]))};
+window.claude={use:async n=>n==='db'?db:n==='user'?user:null};})();
+</script>
+<script>
+document.documentElement.dir='rtl'; document.documentElement.lang='ar';
+const $=s=>document.querySelector(s);
+const esc=s=>String(s??'').replace(/[&<>"']/g,c=>({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;',"'":'&#39;'}[c]));
+const money=n=>'<span class="num">'+Math.round(n).toLocaleString('en-US')+'</span> ر.س';
+const moneyT=n=>Math.round(n).toLocaleString('en-US')+' ر.س';
+const pad=n=>String(n).padStart(2,'0');
+const iso=d=>d.getFullYear()+'-'+pad(d.getMonth()+1)+'-'+pad(d.getDate());
+const today=()=>iso(new Date());
+const CYCLES={1:'شهري',3:'ربع سنوي',6:'نصف سنوي',12:'سنوي'};
+const METHODS=['تحويل بنكي','نقدي','شبكة','شيك'];
+const CATS=['إيجار المالك','صيانة','كهرباء وماء','عمولة','أخرى'];
+
+function addMonths(s,n){const [y,m,d]=s.split('-').map(Number);const t=m-1+n;const ny=y+Math.floor(t/12),nm=((t%12)+12)%12;
+  const last=new Date(Date.UTC(ny,nm+1,0)).getUTCDate();return ny+'-'+pad(nm+1)+'-'+pad(Math.min(d,last));}
+function daysBetween(a,b){return Math.round((Date.parse(b)-Date.parse(a))/864e5);}
+// Due dates of a contract up to and including `upto`; a contract stops charging at its end date.
+function schedule(c,upto){const out=[];const cyc=Number(c.cycle)||1;if(!c.start)return out;
+  for(let i=0;i<600;i++){const d=addMonths(c.start,i*cyc);if(d>upto||(c.end&&d>=c.end))break;out.push(d);}return out;}
+function nextDue(c){const cyc=Number(c.cycle)||1,t=today();if(!c.start||c.closed)return null;
+  for(let i=0;i<600;i++){const d=addMonths(c.start,i*cyc);if(c.end&&d>=c.end)return null;if(d>t)return d;}return null;}
+
+const S={buildings:[],contracts:[],payments:[],expenses:[],maintenance:[],members:[],roles:[]};
+const loaded={};
+let db=null,user=null,me=null,isMgr=false,canPay=true;
+const U={tab:(location.hash||'#home').slice(1),filter:'all',q:'',rep:'late',month:today().slice(0,7),period:'month'};
+if(!['home','contracts','payments','reports','buildings'].includes(U.tab))U.tab='home';
+
+const bName=id=>(S.buildings.find(b=>b.id===id)||{}).name||'مبنى محذوف';
+const paysOf=id=>S.payments.filter(p=>p.contractId===id);
+function stat(c){const t=today();const dues=schedule(c,t);const amt=Number(c.amount)||0;
+  const due=dues.length*amt;const paid=paysOf(c.id).reduce((s,p)=>s+(Number(p.amount)||0),0);
+  const balance=due-paid;let lateDays=0;
+  if(balance>0&&amt>0){const covered=Math.min(dues.length-1,Math.floor(paid/amt));lateDays=daysBetween(dues[covered],t);}
+  const ended=c.closed||(c.end&&c.end<t);
+  return {due,paid,balance,lateDays,ended,next:nextDue(c)};}
+function pillOf(c,st){if(st.balance>0)return '<span class="pill late">متأخر '+st.lateDays+' يوم</span>';
+  if(st.ended)return '<span class="pill off">منتهي</span>';
+  if(st.balance<0)return '<span class="pill ok">مدفوع مقدماً</span>';return '<span class="pill ok">منتظم</span>';}
+
+function toast(m){const t=$('#toast');t.textContent=m;t.hidden=false;clearTimeout(toast.h);toast.h=setTimeout(()=>t.hidden=true,2800);}
+function fail(e){toast(e&&e.code==='invalid_argument'?'ليس لديك صلاحية لهذا الإجراء':e&&e.code==='quota_exceeded'?'امتلأت مساحة البيانات':'تعذّر الحفظ، حاول مرة أخرى');}
+
+const ICON={home:'<path d="M3 11l9-7 9 7v9H3z"/><path d="M9 20v-6h6v6"/>',contracts:'<path d="M6 3h9l4 4v14H6z"/><path d="M9 12h7M9 16h7"/>',
+  payments:'<rect x="3" y="6" width="18" height="12" rx="2"/><circle cx="12" cy="12" r="2.5"/>',reports:'<path d="M4 20V10M10 20V4M16 20v-7M21 20H3"/>',
+  buildings:'<path d="M4 21V5l8-2v18M12 9l8 2v10M3 21h18"/><path d="M7 9h2M7 13h2M7 17h2"/>'};
+const TABS=[['home','الرئيسية'],['contracts','العقود'],['payments','الدفعات'],['reports','التقارير'],['buildings','المباني']];
+function renderTabs(){$('#tabs').innerHTML=TABS.map(([k,l])=>'<button data-act="tab" data-k="'+k+'"'+(U.tab===k?' aria-current="page"':'')+'><svg viewBox="0 0 24 24">'+ICON[k]+'</svg>'+l+'</button>').join('');}
+
+function render(){
+  renderTabs();
+  $('#role').textContent=isMgr?'مدير':canPay?'محصّل':(me&&shareWrite&&!S.roles.some(x=>x.id===me)?'بانتظار التفعيل':'عرض فقط');$('#usersBtn').hidden=!isMgr;
+  const v=$('#view');
+  if(!db){v.innerHTML='<div class="empty">سجّل الدخول إلى Claude لفتح بيانات الإيجارات.</div>';return;}
+  if(!loaded.buildings||!loaded.contracts||!loaded.payments||!loaded.roles){v.innerHTML='<div class="empty">جارٍ التحميل…</div>';return;}
+  v.innerHTML=({home:vHome,contracts:vContracts,payments:vPayments,reports:vReports,buildings:vBuildings})[U.tab]();
+}
+
+function contractRow(c,st){return '<button class="row" data-act="contract" data-id="'+c.id+'"><div class="grow"><div class="t">'+esc(c.tenant)+'</div><div class="small muted">'+esc(bName(c.buildingId))+' · '+esc(c.unit)+' · '+CYCLES[c.cycle]+'</div></div><div class="end">'+(st.balance>0?'<div class="neg">'+money(st.balance)+'</div>':'<div>'+money(c.amount)+'</div>')+pillOf(c,st)+'</div></button>';}
+
+function monthExpected(ym,bid){const [y,m]=ym.split('-').map(Number);const end=ym+'-'+pad(new Date(Date.UTC(y,m,0)).getUTCDate());
+  return S.contracts.filter(c=>!c.closed&&(!bid||c.buildingId===bid)).reduce((s,c)=>s+schedule(c,end).filter(d=>d.startsWith(ym)).length*(Number(c.amount)||0),0);}
+const sumBy=(arr,prefix,bid)=>arr.filter(x=>(x.date||'').startsWith(prefix)&&(!bid||x.buildingId===bid)).reduce((s,x)=>s+(Number(x.amount)||0),0);
+
+function vHome(){
+  if(!S.buildings.length)return '<div class="list"><div class="empty">لا توجد مبانٍ بعد.<br>ابدأ بإضافة أول مبنى ووحداته، ثم أضف العقود وسجّل الدفعات.</div></div>'+(isMgr?'<button class="btn main" data-act="building">إضافة مبنى</button>':'');
+  const ym=today().slice(0,7);const all=S.contracts.map(c=>[c,stat(c)]);
+  const late=all.filter(x=>x[1].balance>0).sort((a,b)=>b[1].lateDays-a[1].lateDays);
+  const totalLate=late.reduce((s,x)=>s+x[1].balance,0);
+  const exp=monthExpected(ym),col=sumBy(S.payments,ym);
+  const units=S.buildings.reduce((s,b)=>s+(b.units||[]).length,0);const occ=all.filter(x=>!x[1].ended).length;
+  const lim=iso(new Date(Date.now()+14*864e5));
+  const soon=all.filter(x=>x[1].next&&x[1].next<=lim&&x[1].balance<=0).sort((a,b)=>a[1].next<b[1].next?-1:1);
+  return '<div class="figures"><div class="fig wide"><span class="small muted">تحصيل هذا الشهر</span><b>'+money(col)+'</b><span class="small muted">من '+money(exp)+' مستحقة</span><div class="bar"><i style="width:'+(exp?Math.min(100,col/exp*100):0)+'%"></i></div></div>'+
+    '<div class="fig late"><span class="small muted">إجمالي المتأخرات</span><b>'+money(totalLate)+'</b><span class="small muted">'+late.length+' عقد</span></div>'+
+    '<div class="fig"><span class="small muted">الوحدات المؤجرة</span><b><span class="num">'+occ+' / '+units+'</span></b><span class="small muted">'+S.buildings.length+' مبنى</span></div></div>'+
+    (canPay?'<button class="btn main" data-act="pay">تسجيل دفعة</button>':'')+
+    '<section><h2>يحتاج متابعة</h2><div class="list">'+(late.length?late.slice(0,6).map(x=>contractRow(x[0],x[1])).join(''):'<div class="empty">لا توجد متأخرات.</div>')+'</div></section>'+
+    (openM().length?'<section><h2>صيانة مفتوحة</h2><div class="list">'+openM().sort((a,b)=>(a.date||'').localeCompare(b.date||'')).slice(0,6).map(m=>maintRow(m,1)).join('')+'</div></section>':'')+
+    '<section><h2>مستحقات خلال 14 يوماً</h2><div class="list">'+(soon.length?soon.map(([c,st])=>'<button class="row" data-act="contract" data-id="'+c.id+'"><div class="grow"><div class="t">'+esc(c.tenant)+'</div><div class="small muted">'+esc(bName(c.buildingId))+' · '+esc(c.unit)+'</div></div><div class="end"><div>'+money(c.amount)+'</div><span class="small muted num">'+st.next+'</span></div></button>').join(''):'<div class="empty">لا توجد مستحقات قريبة.</div>')+'</div></section>';
+}
+
+function vContracts(){
+  let rows=S.contracts.map(c=>[c,stat(c)]);
+  if(U.filter==='late')rows=rows.filter(x=>x[1].balance>0);
+  else if(U.filter==='ended')rows=rows.filter(x=>x[1].ended);
+  else if(U.filter==='active')rows=rows.filter(x=>!x[1].ended);
+  const q=U.q.trim();if(q)rows=rows.filter(([c])=>(c.tenant+' '+c.unit+' '+bName(c.buildingId)+' '+(c.phone||'')).includes(q));
+  rows.sort((a,b)=>b[1].balance-a[1].balance||String(a[0].tenant).localeCompare(b[0].tenant,'ar'));
+  const chip=(k,l)=>'<button class="chip" data-act="filter" data-k="'+k+'" aria-pressed="'+(U.filter===k)+'">'+l+'</button>';
+  return '<input id="q" type="search" placeholder="بحث باسم المستأجر أو الوحدة" value="'+esc(U.q)+'">'+
+    '<div class="chips">'+chip('all','الكل')+chip('active','ساري')+chip('late','متأخر')+chip('ended','منتهي')+'</div>'+
+    '<div class="list" id="clist">'+(rows.length?rows.map(x=>contractRow(x[0],x[1])).join(''):'<div class="empty">'+(S.contracts.length?'لا توجد نتائج.':'لا توجد عقود بعد.')+'</div>')+'</div>'+
+    (isMgr?'<button class="btn main" data-act="newContract">عقد جديد</button>':'');
+}
+
+function vPayments(){
+  const rows=[...S.payments].sort((a,b)=>(b.date||'').localeCompare(a.date||'')).slice(0,100);
+  return (canPay?'<button class="btn main" data-act="pay">تسجيل دفعة</button>':'')+
+    '<div class="list">'+(rows.length?rows.map(p=>{const c=S.contracts.find(x=>x.id===p.contractId);
+      return '<button class="row" data-act="payment" data-id="'+p.id+'"><div class="grow"><div class="t">'+esc(c?c.tenant:'عقد محذوف')+'</div><div class="small muted">'+esc(bName(p.buildingId))+(c?' · '+esc(c.unit):'')+' · '+esc(p.method||'')+'</div></div><div class="end"><div class="pos">'+money(p.amount)+'</div><span class="small muted num">'+esc(p.date)+'</span></div></button>';}).join(''):'<div class="empty">لم تُسجَّل أي دفعة بعد.</div>')+'</div>';
+}
+
+function vReports(){
+  const chip=(k,l)=>'<button class="chip" data-act="rep" data-k="'+k+'" aria-pressed="'+(U.rep===k)+'">'+l+'</button>';
+  let h='<div class="chips">'+chip('late','المتأخرات')+chip('income','الدخل الشهري')+chip('maint','الصيانة')+(isMgr?chip('profit','صافي الربح'):'')+'</div>';
+  if(U.rep==='late'){
+    const rows=S.contracts.map(c=>[c,stat(c)]).filter(x=>x[1].balance>0).sort((a,b)=>b[1].balance-a[1].balance);
+    const tot=rows.reduce((s,x)=>s+x[1].balance,0);
+    h+='<div class="tbl"><table><tr><th>المستأجر</th><th>الوحدة</th><th class="n">أيام</th><th class="n">المتأخر</th></tr>'+
+      (rows.length?rows.map(([c,st])=>'<tr><td>'+esc(c.tenant)+'</td><td>'+esc(bName(c.buildingId))+' · '+esc(c.unit)+'</td><td class="n">'+st.lateDays+'</td><td class="n neg">'+moneyT(st.balance)+'</td></tr>').join(''):'<tr><td colspan="4" class="muted">لا توجد متأخرات.</td></tr>')+
+      '<tfoot><tr><td colspan="3">الإجمالي</td><td class="n">'+moneyT(tot)+'</td></tr></tfoot></table></div>';
+    return h;
+  }
+  if(U.rep==='maint'){const ms=[...S.maintenance].sort((a,b)=>(a.status==='منجز')-(b.status==='منجز')||(b.date||'').localeCompare(a.date||''));
+    const tot=ms.reduce((s,m)=>s+(Number(m.amount)||0),0);
+    return h+'<div class="figures"><div class="fig"><span class="small muted">طلبات مفتوحة</span><b><span class="num">'+openM().length+'</span></b></div><div class="fig"><span class="small muted">إجمالي التكلفة</span><b>'+money(tot)+'</b></div></div>'+
+      '<div class="list">'+(ms.length?ms.map(m=>maintRow(m,1)).join(''):'<div class="empty">لا توجد طلبات صيانة. أضفها من صفحة الوحدة داخل المبنى.</div>')+'</div>'+(canPay?'<button class="btn main" data-act="maint">طلب صيانة</button>':'');}
+  const pfx=U.period==='year'?U.month.slice(0,4):U.month;
+  h+='<div class="two"><label>الشهر<input id="month" type="month" value="'+U.month+'"></label>'+(U.rep==='profit'?'<label>الفترة<select id="period"><option value="month"'+(U.period==='month'?' selected':'')+'>الشهر المحدد</option><option value="year"'+(U.period==='year'?' selected':'')+'>السنة كاملة</option></select></label>':'<span></span>')+'</div>';
+  if(U.rep==='income'){
+    let te=0,tc=0;
+    const body=S.buildings.map(b=>{const e=monthExpected(U.month,b.id),c=sumBy(S.payments,U.month,b.id);te+=e;tc+=c;
+      return '<tr><td>'+esc(b.name)+'</td><td class="n">'+moneyT(e)+'</td><td class="n">'+moneyT(c)+'</td><td class="n">'+(e?Math.round(c/e*100)+'%':'—')+'</td></tr>';}).join('');
+    h+='<div class="tbl"><table><tr><th>المبنى</th><th class="n">المستحق</th><th class="n">المحصّل</th><th class="n">النسبة</th></tr>'+(body||'<tr><td colspan="4" class="muted">لا توجد مبانٍ.</td></tr>')+
+      '<tfoot><tr><td>الإجمالي</td><td class="n">'+moneyT(te)+'</td><td class="n">'+moneyT(tc)+'</td><td class="n">'+(te?Math.round(tc/te*100)+'%':'—')+'</td></tr></tfoot></table></div>'+
+      '<p class="small muted">المحصّل يشمل كل الدفعات المسجلة بتاريخ هذا الشهر، حتى لو كانت عن أشهر سابقة.</p>';
+    return h;
+  }
+  let ti=0,tx=0;
+  const body=S.buildings.map(b=>{const i=sumBy(S.payments,pfx,b.id),x=sumBy(S.expenses,pfx,b.id)+sumBy(S.maintenance,pfx,b.id);ti+=i;tx+=x;
+    return '<tr><td>'+esc(b.name)+'</td><td class="n">'+moneyT(i)+'</td><td class="n">'+moneyT(x)+'</td><td class="n '+(i-x<0?'neg':'pos')+'">'+moneyT(i-x)+'</td></tr>';}).join('');
+  h+='<div class="tbl"><table><tr><th>المبنى</th><th class="n">الدخل</th><th class="n">مصروفات وصيانة</th><th class="n">الصافي</th></tr>'+(body||'<tr><td colspan="4" class="muted">لا توجد مبانٍ.</td></tr>')+
+    '<tfoot><tr><td>الإجمالي</td><td class="n">'+moneyT(ti)+'</td><td class="n">'+moneyT(tx)+'</td><td class="n '+(ti-tx<0?'neg':'pos')+'">'+moneyT(ti-tx)+'</td></tr></tfoot></table></div>';
+  const ex=S.expenses.filter(x=>(x.date||'').startsWith(pfx)).sort((a,b)=>(b.date||'').localeCompare(a.date||''));
+  h+='<section><h2>المصروفات في الفترة</h2><div class="list">'+(ex.length?ex.map(x=>'<button class="row" data-act="expense" data-id="'+x.id+'"><div class="grow"><div class="t">'+esc(x.category)+'</div><div class="small muted">'+esc(bName(x.buildingId))+(x.note?' · '+esc(x.note):'')+'</div></div><div class="end"><div>'+money(x.amount)+'</div><span class="small muted num">'+esc(x.date)+'</span></div></button>').join(''):'<div class="empty">لا توجد مصروفات. سجّل إيجار المالك والصيانة ليظهر الصافي الصحيح.</div>')+'</div><button class="btn" data-act="expense">تسجيل مصروف</button></section>';
+  return h;
+}
+
+function vBuildings(){
+  return '<div class="list">'+(S.buildings.length?S.buildings.map(b=>{const us=b.units||[];const occ=S.contracts.filter(c=>c.buildingId===b.id&&!stat(c).ended).length;
+    return '<button class="row" data-act="bsheet" data-id="'+b.id+'"><div class="grow"><div class="t">'+esc(b.name)+'</div><div class="small muted">'+us.length+' وحدة · '+occ+' مؤجرة · '+Math.max(0,us.length-occ)+' شاغرة</div></div>'+(openM(b.id).length?'<span class="pill warn">'+openM(b.id).length+' صيانة</span>':'')+'</button>';}).join(''):'<div class="empty">لا توجد مبانٍ بعد.</div>')+'</div>'+
+    (isMgr?'<div class="btns"><button class="btn main" data-act="building">إضافة مبنى</button><button class="btn" data-act="expense">تسجيل مصروف</button></div>':'<p class="small muted">إضافة المباني والعقود من صلاحية المدير.</p>')+'<p class="small muted">اضغط على المبنى لعرض وحداته وإضافة وحدات أو طلبات صيانة.</p>';
+}
+
+/* ---------- sheets ---------- */
+let sheetView=null;
+function closeSheet(){sheetView=null;$('#sheet').hidden=true;$('#sheet').innerHTML='';}
+function openSheet(title,html){sheetView=null;const s=$('#sheet');s.innerHTML='<div class="sheet-bg" data-act="bg"><div class="sheet" dir="rtl"><div class="sheet-head"><h2>'+esc(title)+'</h2><button class="btn sm" data-act="close">إغلاق</button></div>'+html+'</div></div>';s.hidden=false;}
+function field(f,v){const val=v??f.def??'';const a=' id="f_'+f.k+'" name="'+f.k+'"'+(f.req?' required':'');
+  if(f.type==='select')return '<label>'+f.l+'<select'+a+'>'+f.opts.map(o=>'<option value="'+esc(o[0])+'"'+(String(o[0])===String(val)?' selected':'')+'>'+esc(o[1])+'</option>').join('')+'</select></label>';
+  if(f.type==='textarea')return '<label>'+f.l+'<textarea'+a+'>'+esc(val)+'</textarea></label>';
+  return '<label>'+f.l+'<input type="'+(f.type||'text')+'"'+a+(f.type==='number'?' inputmode="decimal" min="0" step="any"':'')+' value="'+esc(val)+'"></label>';}
+let onSave=null,onDel=null;
+function openForm(title,fields,vals,save,del){sheetView=null;onSave=save;onDel=del||null;
+  openSheet(title,'<form id="frm">'+fields.map(f=>field(f,vals&&vals[f.k])).join('')+'<div class="btns"><button class="btn main" type="submit">حفظ</button>'+(del?'<button class="btn danger" type="button" data-act="del">حذف</button>':'')+'</div></form>');}
+
+async function save(col,id,data){const ref=id?db.collection(col).doc(id):db.collection(col).doc();await ref.set(data);return ref.id;}
+
+function formBuilding(id){const b=S.buildings.find(x=>x.id===id);
+  if(!isMgr)return;
+  if(b)return openForm('تعديل اسم المبنى',[{k:'name',l:'اسم المبنى',req:1}],b,
+    v=>save('buildings',id,{name:v.name.trim(),units:b.units||[]}),
+    ()=>{if(S.contracts.some(c=>c.buildingId===id)){toast('لا يمكن حذف مبنى عليه عقود');return false;}return db.collection('buildings').doc(id).delete();});
+  openForm('مبنى جديد',[{k:'name',l:'اسم المبنى',req:1},{k:'prefix',l:'تسمية الوحدات',def:'شقة'},{k:'count',l:'عدد الوحدات (تُرقَّم تلقائياً من 1)',type:'number',req:1,def:10}],null,
+    v=>{const n=Math.min(500,Math.max(0,Math.floor(Number(v.count)||0)));const p=v.prefix.trim()||'وحدة';
+      return save('buildings',null,{name:v.name.trim(),units:Array.from({length:n},(_,i)=>p+' '+(i+1))});});}
+
+const openM=(bid,unit)=>S.maintenance.filter(m=>m.status!=='منجز'&&(!bid||m.buildingId===bid)&&(unit===undefined||m.unit===unit));
+function maintRow(m,showPlace){return '<button class="row" data-act="maint" data-id="'+m.id+'"><div class="grow"><div class="t">'+esc(m.title)+'</div><div class="small muted">'+(showPlace?esc(bName(m.buildingId))+' · '+esc(m.unit)+' · ':'')+'<span class="num">'+esc(m.date)+'</span></div></div><div class="end">'+(Number(m.amount)>0?'<div>'+money(m.amount)+'</div>':'')+'<span class="pill '+(m.status==='منجز'?'ok':'warn')+'">'+esc(m.status)+'</span></div></button>';}
+function sheetBuilding(id){const b=S.buildings.find(x=>x.id===id);if(!b)return closeSheet();const us=b.units||[];
+  const nextN=us.length+1;
+  openSheet(b.name,'<div class="list">'+(us.length?us.map(u=>{const c=S.contracts.find(x=>x.buildingId===id&&x.unit===u&&!stat(x).ended);const om=openM(id,u).length;
+      return '<button class="row" data-act="unit" data-id="'+id+'" data-u="'+esc(u)+'"><div class="grow"><div class="t">'+esc(u)+'</div><div class="small muted">'+(c?esc(c.tenant):'شاغرة')+'</div></div>'+(om?'<span class="pill warn">'+om+' صيانة</span>':'')+'</button>';}).join(''):'<div class="empty">لا توجد وحدات بعد.</div>')+'</div>'+
+    (isMgr?'<form id="addu" data-id="'+id+'"><h2>إضافة وحدات</h2><div class="two"><label>التسمية<input id="u_prefix" name="prefix" value="شقة"></label><div class="two"><label>من رقم<input id="u_from" name="from" type="number" inputmode="numeric" min="0" value="'+nextN+'"></label><label>إلى رقم<input id="u_to" name="to" type="number" inputmode="numeric" min="0" placeholder="'+nextN+'"></label></div></div><p class="small muted">لإضافة وحدة واحدة اترك «إلى رقم» فارغاً. لاسم خاص مثل «محل الزاوية» اكتبه في التسمية وافرغ الرقمين.</p><div class="btns"><button class="btn main" type="submit">إضافة</button><button class="btn" type="button" data-act="building" data-id="'+id+'">تعديل اسم المبنى</button></div></form>':''));
+  sheetView=()=>sheetBuilding(id);}
+function sheetUnit(bid,u){const b=S.buildings.find(x=>x.id===bid);if(!b||!(b.units||[]).includes(u))return sheetBuilding(bid);
+  const cs=S.contracts.filter(x=>x.buildingId===bid&&x.unit===u);const c=cs.find(x=>!stat(x).ended);
+  const ms=S.maintenance.filter(m=>m.buildingId===bid&&m.unit===u).sort((a,b)=>(b.date||'').localeCompare(a.date||''));
+  const total=ms.reduce((s,m)=>s+(Number(m.amount)||0),0);
+  openSheet(b.name+' · '+u,'<div class="list">'+(c?contractRow(c,stat(c)):'<div class="empty">الوحدة شاغرة.</div>')+'</div>'+
+    '<section><h2>الصيانة'+(total?' · الإجمالي '+money(total):'')+'</h2><div class="list">'+(ms.length?ms.map(m=>maintRow(m)).join(''):'<div class="empty">لا توجد طلبات صيانة لهذه الوحدة.</div>')+'</div></section>'+
+    '<div class="btns">'+(canPay?'<button class="btn main" data-act="maint" data-b="'+bid+'" data-u="'+esc(u)+'">طلب صيانة</button>':'')+'<button class="btn" data-act="bsheet" data-id="'+bid+'">رجوع للمبنى</button>'+
+    (isMgr&&!cs.length?'<button class="btn danger" data-act="delUnit" data-id="'+bid+'" data-u="'+esc(u)+'">حذف الوحدة</button>':'')+'</div>');
+  sheetView=()=>sheetUnit(bid,u);}
+function formMaint(id,bid,unit){const m=S.maintenance.find(x=>x.id===id);
+  const opts=[];S.buildings.forEach(b=>(b.units||[]).forEach(u=>opts.push([b.id+'|'+u,b.name+' — '+u])));
+  if(!opts.length){toast('أضف مبنى ووحداته أولاً');return;}
+  openForm(m?'تعديل طلب صيانة':'طلب صيانة',[{k:'place',l:'الوحدة',type:'select',opts},{k:'title',l:'المشكلة أو العمل المطلوب',req:1},{k:'date',l:'التاريخ',type:'date',req:1,def:today()},
+    {k:'status',l:'الحالة',type:'select',opts:[['مفتوح','مفتوح'],['منجز','منجز']]},{k:'amount',l:'التكلفة (ر.س) — اختياري',type:'number'},{k:'note',l:'ملاحظة (الفني، التفاصيل)'}],
+    m?{...m,place:m.buildingId+'|'+m.unit,amount:m.amount||''}:{place:bid?bid+'|'+unit:opts[0][0]},
+    v=>{const i=v.place.indexOf('|');return save('maintenance',id,{buildingId:v.place.slice(0,i),unit:v.place.slice(i+1),title:v.title.trim(),date:v.date,status:v.status,amount:Number(v.amount)||0,note:v.note.trim(),by:m?m.by||null:me});},
+    m&&isMgr&&(()=>db.collection('maintenance').doc(id).delete()));}
+
+function formContract(id){const c=S.contracts.find(x=>x.id===id);
+  if(!S.buildings.length){toast('أضف مبنى أولاً');return;}
+  const busy=new Set(S.contracts.filter(x=>x.id!==id&&!stat(x).ended).map(x=>x.buildingId+'|'+x.unit));
+  const opts=[];S.buildings.forEach(b=>(b.units||[]).forEach(u=>{const k=b.id+'|'+u;opts.push([k,b.name+' — '+u+(busy.has(k)?' (مؤجرة)':'')]);}));
+  openForm(c?'تعديل عقد':'عقد جديد',[{k:'place',l:'الوحدة',type:'select',opts,req:1},{k:'tenant',l:'اسم المستأجر',req:1},{k:'phone',l:'الجوال',type:'tel'},
+    {k:'amount',l:'قيمة الدفعة (ر.س)',type:'number',req:1},{k:'cycle',l:'دورة الدفع',type:'select',opts:Object.entries(CYCLES)},
+    {k:'start',l:'بداية العقد (أول استحقاق)',type:'date',req:1,def:today()},{k:'end',l:'نهاية العقد (اختياري)',type:'date'}],
+    c&&{...c,place:c.buildingId+'|'+c.unit},
+    v=>{const i=v.place.indexOf('|');if(v.end&&v.end<=v.start){toast('نهاية العقد يجب أن تكون بعد بدايته');return false;}
+      return save('contracts',id,{buildingId:v.place.slice(0,i),unit:v.place.slice(i+1),tenant:v.tenant.trim(),phone:v.phone.trim(),amount:Number(v.amount),cycle:Number(v.cycle),start:v.start,end:v.end||'',closed:c?!!c.closed:false});},
+    c&&(()=>{if(paysOf(id).length){toast('للعقد دفعات مسجلة. أنهِ العقد بدل حذفه');return false;}return db.collection('contracts').doc(id).delete();}));}
+
+function formPayment(contractId,pid){const p=S.payments.find(x=>x.id===pid);
+  const list=S.contracts.filter(c=>!c.closed||c.id===contractId||(p&&p.contractId===c.id));
+  if(!list.length){toast('لا توجد عقود لتسجيل دفعة عليها');return;}
+  const cid=contractId||(p&&p.contractId)||list[0].id;const c0=S.contracts.find(c=>c.id===cid);
+  openForm(p?'تعديل دفعة':'تسجيل دفعة',[{k:'contractId',l:'العقد',type:'select',opts:list.map(c=>[c.id,c.tenant+' — '+bName(c.buildingId)+' · '+c.unit])},
+    {k:'amount',l:'المبلغ (ر.س)',type:'number',req:1},{k:'date',l:'تاريخ الدفع',type:'date',req:1,def:today()},
+    {k:'method',l:'طريقة الدفع',type:'select',opts:METHODS.map(m=>[m,m])},{k:'note',l:'ملاحظة'}],
+    p||{contractId:cid,amount:c0?c0.amount:''},
+    v=>{const c=S.contracts.find(x=>x.id===v.contractId);if(!(Number(v.amount)>0)){toast('أدخل مبلغاً صحيحاً');return false;}
+      return save('payments',pid,{contractId:v.contractId,buildingId:c.buildingId,amount:Number(v.amount),date:v.date,method:v.method,note:v.note.trim(),by:p?p.by||null:me});},
+    p&&isMgr&&(()=>db.collection('payments').doc(pid).delete()));}
+
+function formExpense(id){if(!isMgr)return;const x=S.expenses.find(e=>e.id===id);
+  if(!S.buildings.length){toast('أضف مبنى أولاً');return;}
+  openForm(x?'تعديل مصروف':'تسجيل مصروف',[{k:'buildingId',l:'المبنى',type:'select',opts:S.buildings.map(b=>[b.id,b.name])},{k:'category',l:'النوع',type:'select',opts:CATS.map(c=>[c,c])},
+    {k:'amount',l:'المبلغ (ر.س)',type:'number',req:1},{k:'date',l:'التاريخ',type:'date',req:1,def:today()},{k:'note',l:'ملاحظة'}],x,
+    v=>{if(!(Number(v.amount)>0)){toast('أدخل مبلغاً صحيحاً');return false;}return save('expenses',id,{buildingId:v.buildingId,category:v.category,amount:Number(v.amount),date:v.date,note:v.note.trim()});},
+    x&&(()=>db.collection('expenses').doc(id).delete()));}
+
+function ledger(c){const t=today();const items=schedule(c,t).map(d=>({date:d,label:'استحقاق',debit:Number(c.amount)||0,credit:0}))
+    .concat(paysOf(c.id).map(p=>({date:p.date,label:'دفعة'+(p.method?' ('+p.method+')':''),debit:0,credit:Number(p.amount)||0})));
+  items.sort((a,b)=>a.date.localeCompare(b.date)||b.debit-a.debit);let bal=0;items.forEach(i=>{bal+=i.debit-i.credit;i.bal=bal;});return items;}
+function statementText(c){const st=stat(c);const L=ledger(c);
+  return ['كشف حساب: '+c.tenant,bName(c.buildingId)+' — '+c.unit,'الإيجار: '+moneyT(c.amount)+' ('+CYCLES[c.cycle]+')','',
+    ...L.map(i=>i.date+' | '+i.label+' | '+(i.debit?'+':'-')+moneyT(i.debit||i.credit)+' | الرصيد '+moneyT(i.bal)),'',
+    'إجمالي المستحق: '+moneyT(st.due),'إجمالي المدفوع: '+moneyT(st.paid),(st.balance>0?'المتبقي عليكم: ':'الرصيد: ')+moneyT(st.balance),'حتى تاريخ '+today()].join('\n');}
+function sheetContract(id){const c=S.contracts.find(x=>x.id===id);if(!c)return;const st=stat(c);const L=ledger(c);
+  openSheet('كشف حساب '+c.tenant,
+    '<div class="small muted">'+esc(bName(c.buildingId))+' · '+esc(c.unit)+' · '+money(c.amount)+' '+CYCLES[c.cycle]+(c.phone?' · <span class="num">'+esc(c.phone)+'</span>':'')+'<br>من <span class="num">'+esc(c.start)+'</span>'+(c.end?' إلى <span class="num">'+esc(c.end)+'</span>':'')+' '+pillOf(c,st)+'</div>'+
+    '<div class="figures"><div class="fig"><span class="small muted">المدفوع</span><b>'+money(st.paid)+'</b></div><div class="fig'+(st.balance>0?' late':'')+'"><span class="small muted">'+(st.balance<0?'رصيد مقدم':'المتبقي')+'</span><b>'+money(Math.abs(st.balance))+'</b></div></div>'+
+    '<div class="tbl"><table><tr><th>التاريخ</th><th>البيان</th><th class="n">المبلغ</th><th class="n">الرصيد</th></tr>'+(L.length?L.map(i=>'<tr><td class="num">'+i.date+'</td><td>'+esc(i.label)+'</td><td class="n '+(i.credit?'pos':'')+'">'+(i.credit?'−':'')+moneyT(i.debit||i.credit)+'</td><td class="n">'+moneyT(i.bal)+'</td></tr>').join(''):'<tr><td colspan="4" class="muted">لا توجد حركات بعد.</td></tr>')+'</table></div>'+
+    '<div class="btns">'+(canPay?'<button class="btn main" data-act="pay" data-id="'+id+'">تسجيل دفعة</button>':'')+'<button class="btn" data-act="copy" data-id="'+id+'">نسخ الكشف للواتساب</button>'+
+    (isMgr?'<button class="btn" data-act="editContract" data-id="'+id+'">تعديل</button><button class="btn" data-act="toggleClose" data-id="'+id+'">'+(c.closed?'إعادة تفعيل العقد':'إنهاء العقد')+'</button>':'')+'</div><textarea id="stmt" readonly hidden></textarea>');}
+
+/* ---------- events ---------- */
+document.addEventListener('click',async e=>{const b=e.target.closest('[data-act]');if(!b)return;const a=b.dataset.act,id=b.dataset.id;
+  if(a==='bg'){if(e.target===b)closeSheet();return;}
+  if(a==='close')return closeSheet();
+  if(a==='tab'){U.tab=b.dataset.k;try{history.replaceState(null,'','#'+U.tab);}catch(_){}window.scrollTo(0,0);return render();}
+  if(a==='filter'){U.filter=b.dataset.k;return render();}
+  if(a==='rep'){U.rep=b.dataset.k;return render();}
+  if(a==='users')return sheetUsers();
+  if(a==='setRole'){if(!isMgr)return;try{await db.doc('roles/'+id).set({role:b.dataset.k});toast('حُفظ الدور');}catch(err){fail(err);}return;}
+  if(a==='contract')return sheetContract(id);
+  if(a==='newContract')return formContract();
+  if(a==='editContract')return formContract(id);
+  if(a==='building')return formBuilding(id);
+  if(a==='bsheet')return sheetBuilding(id);
+  if(a==='unit')return sheetUnit(id,b.dataset.u);
+  if(a==='maint')return canPay?formMaint(id,b.dataset.b,b.dataset.u):null;
+  if(a==='delUnit'){if(b.dataset.sure!=='1'){b.dataset.sure='1';b.textContent='اضغط مرة أخرى لتأكيد الحذف';return;}
+    const bd=S.buildings.find(x=>x.id===id);try{await db.collection('buildings').doc(id).set({name:bd.name,units:(bd.units||[]).filter(x=>x!==b.dataset.u)});toast('حُذفت الوحدة');sheetBuilding(id);}catch(err){fail(err);}return;}
+  if(a==='pay')return formPayment(id);
+  if(a==='payment')return canPay?formPayment(null,id):null;
+  if(a==='expense')return formExpense(id);
+  if(a==='toggleClose'){const c=S.contracts.find(x=>x.id===id);try{const {id:_,...d}=c;await db.collection('contracts').doc(id).set({...d,closed:!c.closed,end:!c.closed&&!c.end?today():c.end});closeSheet();toast(c.closed?'أُعيد تفعيل العقد':'أُنهي العقد');}catch(err){fail(err);}return;}
+  if(a==='copy'){const txt=statementText(S.contracts.find(x=>x.id===id));try{await navigator.clipboard.writeText(txt);toast('نُسخ الكشف');}catch(_){const t=$('#stmt');t.hidden=false;t.value=txt;t.focus();t.select();toast('حدّد النص وانسخه');}return;}
+  if(a==='del'){if(b.dataset.sure!=='1'){b.dataset.sure='1';b.textContent='اضغط مرة أخرى لتأكيد الحذف';return;}
+    try{const r=await onDel();if(r===false){b.dataset.sure='';b.textContent='حذف';return;}closeSheet();toast('حُذف');}catch(err){fail(err);}return;}
+});
+document.addEventListener('submit',async e=>{e.preventDefault();
+  if(e.target.id==='addu'){const bid=e.target.dataset.id;const bd=S.buildings.find(x=>x.id===bid);if(!bd)return;
+    const p=$('#u_prefix').value.trim(),f=$('#u_from').value,t=$('#u_to').value;let names=[];
+    if(f===''&&t===''){if(!p){toast('اكتب اسم الوحدة');return;}names=[p];}
+    else{const a=Math.floor(Number(f===''?t:f)),z=Math.floor(Number(t===''?f:t));if(z<a||z-a>499){toast('تحقق من الأرقام');return;}for(let i=a;i<=z;i++)names.push((p||'وحدة')+' '+i);}
+    const cur=bd.units||[];const add=names.filter(n=>!cur.includes(n));if(!add.length){toast('هذه الوحدات موجودة مسبقاً');return;}
+    const btn=e.target.querySelector('[type=submit]');btn.disabled=true;
+    try{await db.collection('buildings').doc(bid).set({name:bd.name,units:cur.concat(add)});toast('أُضيفت '+add.length+' وحدة');}catch(err){btn.disabled=false;fail(err);}return;}if(e.target.id!=='frm'||!onSave)return;
+  const v=Object.fromEntries(new FormData(e.target).entries());const btn=e.target.querySelector('[type=submit]');btn.disabled=true;
+  try{const r=await onSave(v);if(r===false){btn.disabled=false;return;}closeSheet();toast('حُفظ');}catch(err){btn.disabled=false;fail(err);}});
+document.addEventListener('input',e=>{if(e.target.id==='q'){U.q=e.target.value;const pos=e.target.selectionStart;render();const q=$('#q');q.focus();try{q.setSelectionRange(pos,pos);}catch(_){}}});
+document.addEventListener('change',e=>{if(e.target.id==='month'&&e.target.value){U.month=e.target.value;render();}
+  if(e.target.id==='period'){U.period=e.target.value;render();}
+  if(e.target.id==='f_contractId'&&$('#f_amount')&&!onDel){const c=S.contracts.find(x=>x.id===e.target.value);if(c)$('#f_amount').value=c.amount;}});
+
+/* ---------- boot ---------- */
+/* ---------- users & roles ---------- */
+// Access to the page comes from the Share menu; the role chosen here narrows what the app offers that person.
+let shareAdmin=false,shareWrite=true,owner=false,PS={};
+function applyRole(){if(!user)return;
+  const r=(S.roles.find(x=>x.id===me)||{}).role;
+  const role=owner?'mgr':me?(r||'view'):(shareAdmin?'mgr':'col');
+  isMgr=owner||(role==='mgr'&&shareAdmin);canPay=isMgr||(role!=='view'&&shareWrite);}
+function sheetUsers(){if(!isMgr)return closeSheet();
+  const ms=[...S.members].sort((a,b)=>(b.owner?1:0)-(a.owner?1:0));
+  if(user&&ms.some(m=>!(m.id in PS)))user.profiles(ms.map(m=>m.id)).then(p=>{PS=p;if(sheetView===sheetUsers)sheetUsers();});
+  const LV={admin:'محرر',interact:'مساهم'};
+  const rows=ms.map(m=>{const r=m.owner?'mgr':((S.roles.find(x=>x.id===m.id)||{}).role||'');const nm=(PS[m.id]&&PS[m.id].name)||'مستخدم';
+    const ch=(k,l)=>'<button class="chip" data-act="setRole" data-id="'+m.id+'" data-k="'+k+'" aria-pressed="'+(r===k)+'">'+l+'</button>';
+    return '<div class="row"><div class="grow"><div class="t">'+esc(nm)+(m.id===me?' (أنت)':'')+'</div><div class="small muted">'+(m.owner?'مالك البرنامج':'في المشاركة: '+(LV[m.lvl]||'—')+(r?'':' · بانتظار تحديد الدور')+(r==='mgr'&&m.lvl!=='admin'?' · دور المدير يحتاج مشاركته كمحرر':''))+'</div>'+(m.owner?'':'<div class="chips" style="margin-top:6px">'+ch('mgr','مدير')+ch('col','محصّل')+ch('view','عرض فقط')+'</div>')+'</div>'+(m.owner?'<span class="pill ok">مدير</span>':'')+'</div>';}).join('');
+  openSheet('المستخدمون','<div class="list">'+(rows||'<div class="empty">لا يوجد مستخدمون بعد.</div>')+'</div><p class="small muted">لإضافة شخص جديد: شاركه الصفحة من زر المشاركة، وبعد أول دخول له يظهر هنا لتحدد دوره. الشخص الجديد يبقى «عرض فقط» حتى تحدد له دوراً. من شورك كمشاهد فقط لا يظهر في القائمة.</p>');
+  sheetView=sheetUsers;}
+
+renderTabs();
+(async()=>{
+  const c=window.claude;
+  if(c&&c.use){[db,user]=await Promise.all([c.use('db'),c.use('user')]);}
+  let w=null;
+  if(user){[shareAdmin,owner,w,me]=await Promise.all([user.canEdit(),user.isOwner(),user.can('data.write'),user.id()]);shareWrite=shareAdmin||w!==false;isMgr=owner;canPay=owner;}
+  render();
+  if(!db)return;
+  const sub=k=>db.collection(k).onSnapshot(s=>{S[k]=s.docs.map(d=>({id:d.id,...d.data()}));loaded[k]=true;applyRole();render();if(sheetView)sheetView();},()=>{loaded[k]=true;applyRole();render();});
+  ['roles','members','buildings','contracts','payments','expenses','maintenance'].forEach(sub);
+  if(me&&(owner||shareAdmin||w!==false)){try{const ref=db.doc('members/'+me);const d=await ref.get();const cur=d.exists?d.data():null;const lvl=shareAdmin?'admin':'interact';
+    if(!cur||cur.lvl!==lvl||!!cur.owner!==owner)await ref.set({lvl,owner,since:cur&&cur.since||today()});}catch(_){}}
+})();
+</script>
+
+</body>
+</html>
